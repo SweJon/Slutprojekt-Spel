@@ -26,7 +26,8 @@ namespace PRR1_19_Visning
         Texture2D Player; // Spelarbilden
         Texture2D Invader; // Fienden/invadern 
         Texture2D Invader2;
-        Texture2D Bullet; // Kulan som kommer från spelaren
+        Texture2D Bullet; // Skotten som kommer från spelaren
+        Texture2D EnBullet; // Fiendernas skott
         Texture2D Background; // Spelets bakgrund
         Vector2 BackgroundPos = new Vector2(0,0);
         Vector2 PlayerPos = new Vector2(100, 340);  // Positionen
@@ -79,6 +80,7 @@ namespace PRR1_19_Visning
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Player = Content.Load<Texture2D>("Player");
             Bullet = Content.Load<Texture2D>("Bullet");
+            EnBullet = Content.Load<Texture2D>("EnBullet");
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");
             rectinvader = new Rectangle[rows, cols];
@@ -179,8 +181,21 @@ namespace PRR1_19_Visning
                             rectinvader[r,c].Y = -100000;
                             //PlayerBulletPos.Y = 10000; 
                             score += 1;
-                        }                 
-                    
+                        }
+
+
+            for (int i = 0; i < EnemyBulletPos.Count; i++)
+            {
+                EnemyBulletPos[i] = EnemyBulletPos[i] - new Vector2(0, 3);
+            }
+            foreach (Vector2 Enbullet in EnemyBulletPos)
+                for (int r = 0; r < rows; r++)
+                    for (int c = 0; c < cols; c++)
+                        //if (Player.Contains(Enbullet)) // Player har ingen deifinition för .Contains behöver hitta alternativ metod
+                        {
+                            .Exit()// Behöver kod här som gör att man kan avsluta programmet och visa hiscore
+                        }
+
 
             // Tab bort objekt säkert
             RemoveObjects();
