@@ -14,7 +14,7 @@ namespace PRR1_19_Visning
         private static List<IUpdate> Update1 = new List<IUpdate>();
         private static List<IDraw> Draw1 = new List<IDraw>();
 
-        static public void ADD(IUpdate update)
+        static public void ADD(IUpdate update) 
         {
 
         }
@@ -33,6 +33,9 @@ namespace PRR1_19_Visning
         Vector2 InvaderPos = new Vector2(50, 20);  //Invaderns startposition
         List<Vector2> PlayerBulletPos = new List<Vector2>();
         List<Vector2> EnemyBulletPos = new List<Vector2>();
+        public static int score = 0;
+        public static int hiscore;
+
 
         Rectangle[,] rectinvader; 
         int rows = 4; // Antalet rader med fiender uppått
@@ -75,8 +78,7 @@ namespace PRR1_19_Visning
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Player = Content.Load<Texture2D>("Player");
-            Bullet = Content.Load<Texture2D>("Bullet");           
-
+            Bullet = Content.Load<Texture2D>("Bullet");
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");
             rectinvader = new Rectangle[rows, cols];
@@ -176,6 +178,7 @@ namespace PRR1_19_Visning
                         {
                             rectinvader[r,c].Y = -100000;
                             //PlayerBulletPos.Y = 10000; 
+                            score += 1;
                         }                 
                     
 
