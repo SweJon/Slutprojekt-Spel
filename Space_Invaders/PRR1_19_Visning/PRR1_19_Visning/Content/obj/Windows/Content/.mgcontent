@@ -4,11 +4,11 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Jon/Desktop/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Background.png</File>
-    <File>C:/Users/Jon/Desktop/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Bullet.png</File>
-    <File>C:/Users/Jon/Desktop/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Invader.png</File>
-    <File>C:/Users/Jon/Desktop/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Invader2.png</File>
-    <File>C:/Users/Jon/Desktop/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Player.png</File>
+    <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Background.png</File>
+    <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Bullet.png</File>
+    <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Invader.png</File>
+    <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Invader2.png</File>
+    <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Player.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

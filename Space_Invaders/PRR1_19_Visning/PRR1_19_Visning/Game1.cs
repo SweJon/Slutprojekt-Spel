@@ -37,6 +37,10 @@ namespace PRR1_19_Visning
         public static int score = 0;
         public static int hiscore;
 
+        const int start = 0; // Enum för att välja scen
+        const int spel = 1;
+        const int gameover = 2;
+
 
         Rectangle[,] rectinvader; 
         int rows = 4; // Antalet rader med fiender uppått
@@ -80,7 +84,7 @@ namespace PRR1_19_Visning
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Player = Content.Load<Texture2D>("Player");
             Bullet = Content.Load<Texture2D>("Bullet");
-            EnBullet = Content.Load<Texture2D>("EnBullet");
+           // EnBullet = Content.Load<Texture2D>("EnBullet");
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");
             rectinvader = new Rectangle[rows, cols];
@@ -163,6 +167,7 @@ namespace PRR1_19_Visning
                 PlayerBulletPos.Add(PlayerPos);
             }
 
+         
             if (InvaderPos.Y>-10000) // Om invadern inte har blivit skjuten
                 {
                 EnemyBulletPos.Add(InvaderPos);
@@ -190,11 +195,11 @@ namespace PRR1_19_Visning
             }
             foreach (Vector2 Enbullet in EnemyBulletPos)
                 for (int r = 0; r < rows; r++)
-                    for (int c = 0; c < cols; c++)
+                   // for (int c = 0; c < cols; c++)
                         //if (Player.Contains(Enbullet)) // Player har ingen deifinition för .Contains behöver hitta alternativ metod
-                        {
-                            .Exit()// Behöver kod här som gör att man kan avsluta programmet och visa hiscore
-                        }
+                       // {
+                         //   .Exit()// Behöver kod här som gör att man kan avsluta programmet och visa hiscore
+                       // }
 
 
             // Tab bort objekt säkert

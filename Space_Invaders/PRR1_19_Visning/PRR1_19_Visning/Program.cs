@@ -15,7 +15,7 @@ namespace PRR1_19_Visning
         static void Main()
         {
             using (var game = new Game1())
-                game.Run();          
+                game.Run();
         }
     }
 #endif

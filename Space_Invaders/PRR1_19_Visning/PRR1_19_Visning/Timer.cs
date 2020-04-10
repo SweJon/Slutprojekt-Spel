@@ -21,8 +21,8 @@ namespace PRR1_19_Visning
             {
                 Game1.hiscore = Game1.score;
             }
-            sw.WriteLine("Longest time survived: ", Game1.hiscore); // Lägg till tid en if sats här alltså if score > hiscore     
-            //sw.Close();
+            sw.WriteLine("Longest time survived: ", Game1.hiscore);   
+            sw.Close();
 
             Console.WriteLine(Game1.score);
 
