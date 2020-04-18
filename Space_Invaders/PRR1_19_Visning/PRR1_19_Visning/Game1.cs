@@ -37,6 +37,10 @@ namespace PRR1_19_Visning
         public static int score = 0;
         public static int hiscore;
 
+
+        float EnTimer = 2; // 5 sekunds timer för fiendens bullet
+        const float ResertTimer = 2; // Återställer tiden på timern
+
         const int start = 0; // Enum för att välja scen
         const int spel = 1;
         const int gameover = 2;
@@ -87,6 +91,7 @@ namespace PRR1_19_Visning
            // EnBullet = Content.Load<Texture2D>("EnBullet");
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");
+            //rectplayer = new Rectangle[]; // Gör om spelaren till en rectangle för att kollisionen ska fungera
             rectinvader = new Rectangle[rows, cols];
             for (int r = 0; r < rows; r++) // Lägger till invaders upp till r = rows 
                 for (int c = 0; c < cols; c++) // Gör samma sak fast med columns
@@ -165,11 +170,15 @@ namespace PRR1_19_Visning
             if(kNewState.IsKeyDown(Keys.Space) && kOldState.IsKeyUp(Keys.Space))
             {
                 PlayerBulletPos.Add(PlayerPos);
+                // EnemyBulletPos.Add(InvaderPos);
             }
 
-         
-            if (InvaderPos.Y>-10000) // Om invadern inte har blivit skjuten
-                {
+
+            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            EnTimer -= elapsed;
+            if (EnTimer < 0)
+            {
+                EnTimer = ResertTimer;
                 EnemyBulletPos.Add(InvaderPos);
             }
 
@@ -184,18 +193,18 @@ namespace PRR1_19_Visning
                        if (rectinvader[r,c].Contains(bullet))
                         {
                             rectinvader[r,c].Y = -100000;
-                            //PlayerBulletPos.Y = 10000; 
+                            //PlayerBulletPos.Y = 10000;
                             score += 1;
                         }
 
 
             for (int i = 0; i < EnemyBulletPos.Count; i++)
             {
-                EnemyBulletPos[i] = EnemyBulletPos[i] - new Vector2(0, 3);
+                EnemyBulletPos[i] = EnemyBulletPos[i] - new Vector2(0, -1);
             }
-            foreach (Vector2 Enbullet in EnemyBulletPos)
-                for (int r = 0; r < rows; r++)
-                   // for (int c = 0; c < cols; c++)
+            foreach (Vector2 bullet in EnemyBulletPos)
+               // for (int r = 0; r < rows; r++)
+                 //   for (int c = 0; c < cols; c++)
                         //if (Player.Contains(Enbullet)) // Player har ingen deifinition för .Contains behöver hitta alternativ metod
                        // {
                          //   .Exit()// Behöver kod här som gör att man kan avsluta programmet och visa hiscore
@@ -238,7 +247,16 @@ namespace PRR1_19_Visning
                 rec.Size = new Point(20,15);
                 spriteBatch.Draw(Bullet, rec, Color.White);
             }
-            
+
+
+            foreach (Vector2 bulletPos in EnemyBulletPos)
+            {
+                Rectangle rec = new Rectangle();
+                rec.Location = bulletPos.ToPoint();
+                rec.Size = new Point(30, 20);
+                spriteBatch.Draw(Bullet, rec, Color.Red);
+            }
+
 
             spriteBatch.End();
             // TODO: Add your drawing code here
