@@ -23,12 +23,8 @@ namespace PRR1_19_Visning
     GraphicsDeviceManager graphics;      
         SpriteBatch spriteBatch;
 
-        Texture2D Player; // Spelarbilden
-        Texture2D Invader; // Fienden/invadern 
-        Texture2D Invader2;
-        Texture2D Bullet; // Skotten som kommer från spelaren
-        Texture2D EnBullet; // Fiendernas skott
-        Texture2D Background; // Spelets bakgrund
+        Texture2D Player, Invader, Invader2, Bullet, Background; // Spelar, invader, bullet och backgrunds texture2d'n
+        Rectangle PlayerRec;
         Vector2 BackgroundPos = new Vector2(0,0);
         Vector2 PlayerPos = new Vector2(100, 340);  // Positionen
         Vector2 InvaderPos = new Vector2(50, 20);  //Invaderns startposition
@@ -38,7 +34,7 @@ namespace PRR1_19_Visning
         public static int hiscore;
 
 
-        float EnTimer = 2; // 5 sekunds timer för fiendens bullet
+        float EnTimer = 2; // timer för fiendens bullet
         const float ResertTimer = 2; // Återställer tiden på timern
 
         const int start = 0; // Enum för att välja scen
@@ -50,6 +46,7 @@ namespace PRR1_19_Visning
         int rows = 4; // Antalet rader med fiender uppått
         int cols = 8; // Antalet rader med fiender åt sidan 
         string direction = "Right";
+
 
 
         KeyboardState kNewState;
@@ -88,10 +85,11 @@ namespace PRR1_19_Visning
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Player = Content.Load<Texture2D>("Player");
             Bullet = Content.Load<Texture2D>("Bullet");
-           // EnBullet = Content.Load<Texture2D>("EnBullet");
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");
-            //rectplayer = new Rectangle[]; // Gör om spelaren till en rectangle för att kollisionen ska fungera
+            PlayerRec = new Rectangle(); // Gör om spelaren till en rectangle för att kollisionen ska fungera
+
+
             rectinvader = new Rectangle[rows, cols];
             for (int r = 0; r < rows; r++) // Lägger till invaders upp till r = rows 
                 for (int c = 0; c < cols; c++) // Gör samma sak fast med columns
@@ -132,6 +130,7 @@ namespace PRR1_19_Visning
             if ((kNewState.IsKeyDown(Keys.Left)) && (PlayerPos.X > 0))
                 PlayerPos.X-=6;
 
+
             int rightside = graphics.GraphicsDevice.Viewport.Width;
             int leftside = 0; 
 
@@ -144,6 +143,8 @@ namespace PRR1_19_Visning
                     if (direction.Equals("Left"))
                         rectinvader[r, c].X =  rectinvader[r, c].X - 1;
                     }
+
+
             // Kollar om invaderserna når kanten
             string changedir = "No";
             for (int r = 0; r < rows; r++) 
@@ -163,14 +164,14 @@ namespace PRR1_19_Visning
 
                     if (changedir.Equals("Yes"))
                         {
-                           rectinvader[r, c].Y = rectinvader[r, c].Y + 6;
+                           rectinvader[r, c].Y = rectinvader[r, c].Y + 7;
                         }
                     }
+
 
             if(kNewState.IsKeyDown(Keys.Space) && kOldState.IsKeyUp(Keys.Space))
             {
                 PlayerBulletPos.Add(PlayerPos);
-                // EnemyBulletPos.Add(InvaderPos);
             }
 
 
@@ -205,10 +206,17 @@ namespace PRR1_19_Visning
             foreach (Vector2 bullet in EnemyBulletPos)
                // for (int r = 0; r < rows; r++)
                  //   for (int c = 0; c < cols; c++)
-                        //if (Player.Contains(Enbullet)) // Player har ingen deifinition för .Contains behöver hitta alternativ metod
+                        //if (Player.Contains(Bullet)) // Player har ingen deifinition för .Contains behöver hitta alternativ metod
                        // {
                          //   .Exit()// Behöver kod här som gör att man kan avsluta programmet och visa hiscore
                        // }
+
+
+                if(rectinvader[r,c].Y > 100) // Om Invadernars bullet träffar spelarens bullet
+                {
+                    Exit();
+                }
+
 
 
             // Tab bort objekt säkert
@@ -233,11 +241,14 @@ namespace PRR1_19_Visning
             spriteBatch.Begin();
           
             spriteBatch.Draw(Background, BackgroundPos, Color.White); // Allting som skrivs ut bakom denna bild kommer inte att kunna synas
+
+
             for (int r = 0; r < rows; r++) 
                 for (int c = 0; c < cols; c++)
                     spriteBatch.Draw(Invader, rectinvader[r, c], Color.White); // Ritar ut invadrarna på både x och y axeln (r, c)
-            spriteBatch.Draw(Player, PlayerPos, Color.White);
-            //spriteBatch.Draw(Invader, InvaderPos, Color.White);
+
+            //spriteBatch.Draw(Player, PlayerRec(), PlayerPos, Color.White);
+            spriteBatch.Draw(Player, PlayerPos, Color.White);        
             
 
             foreach (Vector2 bulletPos in PlayerBulletPos)
