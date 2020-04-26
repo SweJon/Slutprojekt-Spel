@@ -23,7 +23,7 @@ namespace PRR1_19_Visning
     GraphicsDeviceManager graphics;      
         SpriteBatch spriteBatch;
 
-        Texture2D Player, Invader, Invader2, Bullet, Background; // Spelar, invader, bullet och backgrunds texture2d'n
+        Texture2D Player, Invader, Invader2, Bullet, Background, Ufo; // Spelar, invader, bullet och backgrunds texture2d'n     
         Rectangle PlayerRec;
         Vector2 BackgroundPos = new Vector2(0,0);
         Vector2 PlayerPos = new Vector2(100, 340);  // Positionen
@@ -42,7 +42,13 @@ namespace PRR1_19_Visning
         const int gameover = 2;
 
 
-        Rectangle[,] rectinvader; 
+        Rectangle[,]UfoRec;
+        int Ypos = 100;
+        int size = 4;
+
+
+
+        Rectangle[,] rectinvader;
         int rows = 4; // Antalet rader med fiender uppått
         int cols = 8; // Antalet rader med fiender åt sidan 
         string direction = "Right";
@@ -83,11 +89,24 @@ namespace PRR1_19_Visning
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            Ufo = Content.Load<Texture2D>("Ufo");
             Player = Content.Load<Texture2D>("Player");
             Bullet = Content.Load<Texture2D>("Bullet");
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");
             PlayerRec = new Rectangle(); // Gör om spelaren till en rectangle för att kollisionen ska fungera
+
+
+            UfoRec = new Rectangle[Ypos, size];
+            for (int s = 3; s < size; s++)
+                for (int y = 0; y < Ypos; y++)
+            {
+                UfoRec[y, s].Width = Ufo.Width / s; // Varför kan man inte dividera med talet och varför funkar inte multiplikation här med s när det funkar med colums (c)? Dessutom vrf funkar inte division på varken c eller s?
+                UfoRec[y, s].Height = Ufo.Height / s;
+                UfoRec[y, s].Y = 100; // Y = y glitchar sig för att skeppet målas ut så många gånger som y++ sker
+                UfoRec[y, s].X = 50;
+            }
+
 
 
             rectinvader = new Rectangle[rows, cols];
@@ -188,15 +207,26 @@ namespace PRR1_19_Visning
             {
                 PlayerBulletPos[i] = PlayerBulletPos[i] - new Vector2(0,3);
             }
+
             foreach(Vector2 bullet in PlayerBulletPos)
+
             for (int r = 0; r < rows; r++) 
                 for (int c = 0; c < cols; c++)
                        if (rectinvader[r,c].Contains(bullet))
                         {
-                            rectinvader[r,c].Y = -100000;
-                            //PlayerBulletPos.Y = 10000;
+                            rectinvader[r,c].Y = 10000;
+                           //PlayerBulletPos.Y = 10000;
                             score += 1;
                         }
+
+
+            for (int r = 0; r < rows; r++)
+                for (int c = 0; c < cols; c++)
+
+                    if (rectinvader[r, c].Y > 9999) // Om Invadernars bullet träffar spelarens bullet
+                    {
+                       // Exit();
+                    }
 
 
             for (int i = 0; i < EnemyBulletPos.Count; i++)
@@ -211,11 +241,6 @@ namespace PRR1_19_Visning
                          //   .Exit()// Behöver kod här som gör att man kan avsluta programmet och visa hiscore
                        // }
 
-
-                if(rectinvader[r,c].Y > 100) // Om Invadernars bullet träffar spelarens bullet
-                {
-                    Exit();
-                }
 
 
 
@@ -243,7 +268,12 @@ namespace PRR1_19_Visning
             spriteBatch.Draw(Background, BackgroundPos, Color.White); // Allting som skrivs ut bakom denna bild kommer inte att kunna synas
 
 
-            for (int r = 0; r < rows; r++) 
+            for (int s = 0; s < size; s++)
+                for (int y = 0; y < Ypos; y++)
+                    spriteBatch.Draw(Ufo, UfoRec[y, s], Color.White); // Ritar ut ufot
+
+
+                    for (int r = 0; r < rows; r++) 
                 for (int c = 0; c < cols; c++)
                     spriteBatch.Draw(Invader, rectinvader[r, c], Color.White); // Ritar ut invadrarna på både x och y axeln (r, c)
 
