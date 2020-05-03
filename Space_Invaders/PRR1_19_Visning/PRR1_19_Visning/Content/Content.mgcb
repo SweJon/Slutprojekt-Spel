@@ -73,6 +73,13 @@
 /processorParam:TextureFormat=Color
 /build:Player.png
 
+#begin scorefnt.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:scorefnt.spritefont
+
 #begin Ufo.png
 /importer:TextureImporter
 /processor:TextureProcessor
