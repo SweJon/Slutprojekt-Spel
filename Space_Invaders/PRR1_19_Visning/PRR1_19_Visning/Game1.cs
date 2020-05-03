@@ -23,9 +23,8 @@ namespace PRR1_19_Visning
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Texture2D Player, Invader, Invader2, Bullet, Background, Ufo; // Spelar, invader, bullet och backgrunds texture2d'n
+        Texture2D Player, Player2, Invader, Invader2, Bullet, Background, Ufo; // Spelar, invader, bullet och backgrunds texture2d'n
         Vector2 BackgroundPos = new Vector2(0, 0);
-        Vector2 PlayerPos = new Vector2(100, 340);  // Positionen
         List<Vector2> PlayerBulletPos = new List<Vector2>();
         List<Vector2> EnemyBulletPos = new List<Vector2>();
 
@@ -97,10 +96,12 @@ namespace PRR1_19_Visning
             Ufo = Content.Load<Texture2D>("Ufo");
             Player = Content.Load<Texture2D>("Player");
             Bullet = Content.Load<Texture2D>("Bullet");
+            Player2 = Content.Load<Texture2D>("Player2");
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");           
 
 
+            // Player
             PlayerRec = new Rectangle[PlayerXPos, PlayerYPos];
             for (int x = 0; x < PlayerXPos; x++)
                 for (int y = 0; y < PlayerYPos; y++)
@@ -112,6 +113,7 @@ namespace PRR1_19_Visning
                 }
 
 
+            // Ufo
             UfoRec = new Rectangle[Ypos, size];
             for (int s = 3; s < size; s++)
                 for (int y = 0; y < Ypos; y++)
@@ -124,6 +126,7 @@ namespace PRR1_19_Visning
 
 
 
+            // Invader
             rectinvader = new Rectangle[rows, cols];
             for (int r = 0; r < rows; r++) // Lägger till invaders upp till r = rows 
                 for (int c = 0; c < cols; c++) // Gör samma sak fast med columns
@@ -166,14 +169,18 @@ namespace PRR1_19_Visning
                 }
 
 
-            for (int s = 3; s < size; s++) // Flyttar ufot in mot skärmen
+            // Flyttar ufot in mot skärmen
+            for (int s = 3; s < size; s++) 
                 for (int y = 0; y < Ypos; y++)
                 {                 
                     UfoRec[y, s].X = UfoRec[y, s].X + 1;
                 }
 
-                    int rightside = graphics.GraphicsDevice.Viewport.Width;
+
+            // Invadrarnas kanter
+            int rightside = graphics.GraphicsDevice.Viewport.Width;
             int leftside = 0;
+
 
             // Ändrar positionen för alla invaders
             for (int r = 0; r < rows; r++)
@@ -221,6 +228,7 @@ namespace PRR1_19_Visning
                         }
                     }
 
+
             // Timer som kontrolerar intervallet som fiender skjuter bullets
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             EnTimer -= elapsed;
@@ -229,7 +237,8 @@ namespace PRR1_19_Visning
                     if (EnTimer < 0)
                     {
                         EnTimer = ResertTimer;
-                        // EnemyBulletPos.Add(PlayerPos);
+                        //EnemyBulletPos.Add(Ufo);
+                         // EnemyBulletPos.Add(Player);
                     }
 
 
@@ -247,9 +256,10 @@ namespace PRR1_19_Visning
                         if (rectinvader[r, c].Contains(bullet)) 
                         {
                             rectinvader[r, c].Y = 10000;
-                            //PlayerBulletPos.Y = 10000;
+                            //Bullet.Y = 10000;
                             score += 10;
                         }
+
 
             // Om spelarens träffas av en bullet
             foreach (Vector2 bullet in EnemyBulletPos)
@@ -338,7 +348,7 @@ namespace PRR1_19_Visning
                     spriteBatch.Draw(Ufo, UfoRec[y, s], Color.White);
 
 
-            // Ritar ut invadern
+            // Ritar ut Playern
             for (int x = 0; x < PlayerXPos; x++)
                 for (int y = 0; y < PlayerYPos; y++)
                     spriteBatch.Draw(Player, PlayerRec[x, y], Color.White);     

@@ -9,10 +9,12 @@
     <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Invader.png</File>
     <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Invader2.png</File>
     <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Player.png</File>
+    <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Player2.png</File>
     <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/scorefnt.spritefont</File>
     <File>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Ufo.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

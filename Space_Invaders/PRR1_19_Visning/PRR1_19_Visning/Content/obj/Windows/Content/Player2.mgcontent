@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Background.png</SourceFile>
-  <SourceTime>2020-02-24T07:03:34+01:00</SourceTime>
-  <DestFile>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/bin/Windows/Background.xnb</DestFile>
-  <DestTime>2020-05-03T22:21:10.7465218+02:00</DestTime>
+  <SourceFile>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/Player2.png</SourceFile>
+  <SourceTime>2020-05-03T22:18:28.9990293+02:00</SourceTime>
+  <DestFile>C:/Users/Jon/source/repos/Slutprojekt-Spel/Space_Invaders/PRR1_19_Visning/PRR1_19_Visning/Content/bin/Windows/Content/Player2.xnb</DestFile>
+  <DestTime>2020-05-03T22:21:15.0694406+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2018-12-08T17:35:54+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
