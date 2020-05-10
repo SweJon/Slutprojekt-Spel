@@ -23,6 +23,9 @@ namespace PRR1_19_Visning
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        private Texture2D startButton, exitButton, pauseButton, resumeButton; // Menu texture2ds
+        private Vector2 startButtonPosition, exitButtonPosition; // Menu vectorer
+
         Texture2D Player, Player2, Invader, Invader2, Bullet, Background, Ufo; // Spelar, invader, bullet och backgrunds texture2d'n
         Vector2 BackgroundPos = new Vector2(0, 0);
         List<Vector2> PlayerBulletPos = new List<Vector2>();
@@ -237,8 +240,8 @@ namespace PRR1_19_Visning
                     if (EnTimer < 0)
                     {
                         EnTimer = ResertTimer;
-                        //EnemyBulletPos.Add(Ufo);
-                         // EnemyBulletPos.Add(Player);
+                        EnemyBulletPos.Add(UfoRec);
+
                     }
 
 
