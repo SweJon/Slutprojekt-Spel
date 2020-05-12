@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
+
 namespace PRR1_19_Visning
 {
     /// <summary>
@@ -26,19 +27,25 @@ namespace PRR1_19_Visning
         private Texture2D startButton, exitButton, pauseButton, resumeButton; // Menu texture2ds
         private Vector2 startButtonPosition, exitButtonPosition; // Menu vectorer
 
+
         Texture2D Player, Player2, Invader, Invader2, Bullet, Background, Ufo; // Spelar, invader, bullet och backgrunds texture2d'n
         Vector2 BackgroundPos = new Vector2(0, 0);
         List<Vector2> PlayerBulletPos = new List<Vector2>();
         List<Vector2> EnemyBulletPos = new List<Vector2>();
 
         public static int score;
-        public static int hiscore;
         SpriteFont ScoreFont;
         Vector2 ScorePosition;
 
 
         float EnTimer = 2; // timer för fiendens bullet
         const float ResertTimer = 2; // Återställer tiden på timern
+
+        enum GameState { 
+             Menu,
+             Game,
+             Paused
+        }
 
         const int start = 0; // Enum för att välja scen
         const int spel = 1;
@@ -240,7 +247,7 @@ namespace PRR1_19_Visning
                     if (EnTimer < 0)
                     {
                         EnTimer = ResertTimer;
-                        EnemyBulletPos.Add(UfoRec);
+                        EnemyBulletPos.Add(BackgroundPos);
 
                     }
 
@@ -302,16 +309,6 @@ namespace PRR1_19_Visning
             {
                 EnemyBulletPos[i] = EnemyBulletPos[i] - new Vector2(0, -1);
             }
-
-            foreach (Vector2 bullet in EnemyBulletPos)
-                // for (int r = 0; r < rows; r++)
-                //   for (int c = 0; c < cols; c++)
-                //if (Player.Contains(Bullet)) // Player har ingen deifinition för .Contains behöver hitta alternativ metod
-                // {
-                //   .Exit()// Behöver kod här som gör att man kan avsluta programmet och visa hiscore
-                // }
-
-
 
 
                 // Tar bort objekt säkert

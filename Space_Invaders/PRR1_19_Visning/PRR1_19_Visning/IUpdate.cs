@@ -8,6 +8,6 @@ namespace PRR1_19_Visning
 {
     public interface IUpdate
     {
-        void Update();
+       // void Update();
     }
 }
