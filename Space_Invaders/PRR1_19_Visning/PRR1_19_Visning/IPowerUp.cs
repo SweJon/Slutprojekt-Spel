@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PRR1_19_Visning
 {
-    // Klassen har ingen använding i nuläget
-    public interface IUpdate
+    interface IPowerUp
     {
-       // void Update();
+        int timeactive { get; set; }
+        int timetoclaim { get; set; }
     }
 }

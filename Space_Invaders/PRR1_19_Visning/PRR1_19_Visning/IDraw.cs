@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace PRR1_19_Visning
 {
-    public interface IDraw
+    // Klassen har ingen användning i nuläget
+    public interface IDraw 
     {
         void IDraw();
     }

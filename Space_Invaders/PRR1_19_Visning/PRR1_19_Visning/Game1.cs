@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System;
 
 
 namespace PRR1_19_Visning
@@ -9,11 +10,12 @@ namespace PRR1_19_Visning
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class Game1 : Game, IPowerUp
     {
 
-        private static List<IUpdate> Update1 = new List<IUpdate>();
-        private static List<IDraw> Draw1 = new List<IDraw>();
+        // IUpdate och IDraw används inte ens
+        private static List<IUpdate> Update1 = new List<IUpdate>(); 
+        private static List<IDraw> Draw1 = new List<IDraw>(); 
 
         static public void ADD(IUpdate update)
         {
@@ -29,7 +31,10 @@ namespace PRR1_19_Visning
 
 
         Texture2D Player, Player2, Invader, Invader2, Bullet, Background, Ufo; // Spelar, invader, bullet och backgrunds texture2d'n
+
         Vector2 BackgroundPos = new Vector2(0, 0);
+        Vector2 EnBulletStartPos = new Vector2(100, 0);
+
         List<Vector2> PlayerBulletPos = new List<Vector2>();
         List<Vector2> EnemyBulletPos = new List<Vector2>();
 
@@ -61,6 +66,8 @@ namespace PRR1_19_Visning
         int Ypos = 100;
         int size = 4;
 
+        Random random = new Random();
+
 
         Rectangle[,] rectinvader;
         int rows = 4; // Antalet rader med fiender uppått
@@ -71,6 +78,11 @@ namespace PRR1_19_Visning
 
         KeyboardState kNewState;
         KeyboardState kOldState;
+
+
+        // Interface för powerups
+        public int timeactive { get; set; }
+        public int timetoclaim { get; set; }
 
         public Game1()
         {
@@ -108,7 +120,11 @@ namespace PRR1_19_Visning
             Bullet = Content.Load<Texture2D>("Bullet");
             Player2 = Content.Load<Texture2D>("Player2");
             Invader = Content.Load<Texture2D>("Invader");
-            Invader2 = Content.Load<Texture2D>("Invader2");           
+            Invader2 = Content.Load<Texture2D>("Invader2");
+            EnemyBulletPos.Add(EnBulletStartPos);
+
+            // Genererar ett slumpmässigt nummer inom ett intervall
+            int Randomnumber = random.Next(-1500, -500);
 
 
             // Player
@@ -131,7 +147,8 @@ namespace PRR1_19_Visning
                     UfoRec[y, s].Width = Ufo.Width / s;
                     UfoRec[y, s].Height = Ufo.Height / s;
                     UfoRec[y, s].Y = 100; // Y = y glitchar sig för att skeppet målas ut så många gånger som y++ sker
-                    UfoRec[y, s].X = -1500;
+                    UfoRec[y, s].X = Randomnumber;
+                    Vector2 UfoPos = new Vector2(UfoRec[y, s].X, UfoRec[y, s].Y);
                 }
 
 
@@ -145,7 +162,6 @@ namespace PRR1_19_Visning
                     rectinvader[r, c].Height = Invader.Height;
                     rectinvader[r, c].X = 60 * c; // numret är distansen emmellan alla invaders
                     rectinvader[r, c].Y = 60 * r;
-                    Vector2 EnemyPos = new Vector2(rectinvader[r, c].X, rectinvader[r, c].Y); // EnemyPos värdet används för att bestämma varifrån enemybullet ska uppstå
                 }
 
             Background = Content.Load<Texture2D>("Background"); // Backgrunden i spelet
@@ -197,9 +213,9 @@ namespace PRR1_19_Visning
                 for (int c = 0; c < cols; c++)
                 {
                     if (direction.Equals("Right"))
-                        rectinvader[r, c].X = rectinvader[r, c].X + 1;
+                        rectinvader[r, c].X = rectinvader[r, c].X + 2;
                     if (direction.Equals("Left"))
-                        rectinvader[r, c].X = rectinvader[r, c].X - 1;
+                        rectinvader[r, c].X = rectinvader[r, c].X - 2;
                 }
 
 
@@ -226,16 +242,14 @@ namespace PRR1_19_Visning
                     }
                 }
 
+
             // Skjuter bullets från playern
             if (kNewState.IsKeyDown(Keys.Space) && kOldState.IsKeyUp(Keys.Space))
                 for (int x = 0; x < PlayerXPos; x++)
                     for (int y = 0; y < PlayerYPos; y++)
                     {
                         Vector2 PlayerPos1 = new Vector2(PlayerRec[x, y].X, PlayerRec[x, y].Y);
-
-                        {
-                            PlayerBulletPos.Add(PlayerPos1);
-                        }
+                        PlayerBulletPos.Add(PlayerPos1);                       
                     }
 
 
@@ -244,18 +258,36 @@ namespace PRR1_19_Visning
             EnTimer -= elapsed;
             for (int r = 0; r < rows; r++)
                 for (int c = 0; c < cols; c++)
-                    if (EnTimer < 0)
+                    for (int s = 3; s < size; s++)
+                        for (int y = 0; y < Ypos; y++)
+                            if (EnTimer < 0)
                     {
+
                         EnTimer = ResertTimer;
-                        EnemyBulletPos.Add(BackgroundPos);
+
+                        EnemyBulletPos.Equals(BackgroundPos);
+
+                        Vector2 UfoPos = new Vector2(UfoRec[y, s].X + 70, UfoRec[y, s].Y); // + 70 används för att kompensera för ufots rörelse så att det ser ut som bulletn åker ut från mitten av ufot
+                        EnemyBulletPos.Add(UfoPos); // Spawnar bullets vid ufot
+
+                       Vector2 InvaderPos = new Vector2(rectinvader[r, c].X, rectinvader[r, c].Y);
+                       //EnemyBulletPos.Add(InvaderPos); // Spawnar bullets vid invadrarna (spelet börjar dock laggar, vet inte hur man flyttar bullets dock)
 
                     }
 
 
-            // Flyttar playerns bullet i y led
+
+            // Flyttar playerns bullet i y led (koden är samma här som för invaderbullet inte detta som får det att lagga)
             for (int i = 0; i < PlayerBulletPos.Count; i++)
             {
                 PlayerBulletPos[i] = PlayerBulletPos[i] - new Vector2(0, 3);
+            }
+
+
+            // Flyttar invadrarnas bullets i y led
+            for (int i = 0; i < EnemyBulletPos.Count; i++)
+            {
+                EnemyBulletPos[i] = EnemyBulletPos[i] - new Vector2(0, -2);
             }
 
 
@@ -265,9 +297,20 @@ namespace PRR1_19_Visning
                     for (int c = 0; c < cols; c++)
                         if (rectinvader[r, c].Contains(bullet)) 
                         {
-                            rectinvader[r, c].Y = 10000;
-                            //Bullet.Y = 10000;
+                            rectinvader[r, c].Y = -10000;
+                            // PlayerBulletPos.Equals();
                             score += 10;
+                        }
+
+
+            // Om en invader har kommit för när playern
+            for (int x = 0; x < PlayerXPos; x++)
+                for (int y = 0; y < PlayerYPos; y++)
+                    for (int r = 0; r < rows; r++)
+                         for (int c = 0; c < cols; c++)
+                        if (PlayerRec[x, y].Y < rectinvader[r, c].Y)
+                        {
+                             Exit();
                         }
 
 
@@ -295,22 +338,6 @@ namespace PRR1_19_Visning
                         }
 
 
-            for (int r = 0; r < rows; r++)
-                for (int c = 0; c < cols; c++)
-
-                    if (rectinvader[r, c].Y > 9999) // Om Invadernars bullet träffar spelarens bullet
-                    {
-                        // Exit();
-                    }
-
-
-
-            for (int i = 0; i < EnemyBulletPos.Count; i++)
-            {
-                EnemyBulletPos[i] = EnemyBulletPos[i] - new Vector2(0, -1);
-            }
-
-
                 // Tar bort objekt säkert
                 RemoveObjects();
 
@@ -336,6 +363,15 @@ namespace PRR1_19_Visning
             spriteBatch.DrawString(ScoreFont, "Score: " + score.ToString(), ScorePosition, Color.White);
 
 
+            // Ritar ut enemybullet
+            foreach (Vector2 bulletPos in EnemyBulletPos)
+            {
+                Rectangle rec = new Rectangle();
+                rec.Location = bulletPos.ToPoint();
+                rec.Size = new Point(30, 20);
+                spriteBatch.Draw(Bullet, rec, Color.Red);
+            }
+
             // Ritar ut invadrarna på både x och y axeln (r, c)
             for (int r = 0; r < rows; r++)
                 for (int c = 0; c < cols; c++)
@@ -354,23 +390,13 @@ namespace PRR1_19_Visning
                     spriteBatch.Draw(Player, PlayerRec[x, y], Color.White);     
 
 
-            // Rítar ut playerbullet
+            // Ritar ut playerbullet
             foreach (Vector2 bulletPos in PlayerBulletPos)
             {
                 Rectangle rec = new Rectangle();
                 rec.Location = bulletPos.ToPoint();
                 rec.Size = new Point(20, 15);
                 spriteBatch.Draw(Bullet, rec, Color.White);
-            }
-
-
-            // Ritar ut enemybullet
-            foreach (Vector2 bulletPos in EnemyBulletPos)
-            {
-                Rectangle rec = new Rectangle();
-                rec.Location = bulletPos.ToPoint();
-                rec.Size = new Point(30, 20);
-                spriteBatch.Draw(Bullet, rec, Color.Red);
             }
 
 
