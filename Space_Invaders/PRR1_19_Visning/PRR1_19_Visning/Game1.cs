@@ -46,6 +46,9 @@ namespace PRR1_19_Visning
         float EnTimer = 3; // timer för fiendens bullet
         const float ResertTimer = 3; // Återställer tiden på timern
 
+        double AnimationTimer = 1; // Timer för invadrarnas animation
+        const double ResertAnimation = 1.5; // Återställer timern
+
         enum GameState { 
              Menu,
              Game,
@@ -61,6 +64,7 @@ namespace PRR1_19_Visning
 
         private Character character;
 
+        bool InvaderAnimation = false;
 
         const int start = 0; // Enum för att välja scen
         const int spel = 1;
@@ -109,6 +113,7 @@ namespace PRR1_19_Visning
             ScorePosition.Y = 10;
 
             character = Character.Normal; // Alltså är standard charactären i början Normal/Player
+            InvaderAnimation = false;
 
             SpeedUp redpill = new SpeedUp()
             {
@@ -134,12 +139,6 @@ namespace PRR1_19_Visning
             Player2 = Content.Load<Texture2D>("Player2");
             Player3 = Content.Load<Texture2D>("Player3");
             Bullet = Content.Load<Texture2D>("Bullet");
-            RectBullet.Width = Bullet.Width;
-            RectBullet.Height = Bullet.Height;
-            EnRectBullet.Width = Bullet.Width;
-            EnRectBullet.Height = Bullet.Height;
-            UfoRectBullet.Width = Bullet.Width;
-            UfoRectBullet.Height = Bullet.Height;
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");
 
@@ -282,9 +281,10 @@ namespace PRR1_19_Visning
                     }
 
 
+            // Flyttar på playerbullet
             if (IsHit == false && UfoIsHit == false)
             {
-                RectBullet.Y -= 3; // Flyttar på playerbullet
+                RectBullet.Y -= 3; 
             }
 
 
@@ -305,9 +305,27 @@ namespace PRR1_19_Visning
 
                         UfoRectBullet.X = UfoRec[y, s].X + 70; // + 70 används för att kompensera för ufots rörelse så att det ser ut som bulletn åker ut från mitten av ufot
                         UfoRectBullet.Y = UfoRec[y, s].Y;
-
-
                     }
+
+
+            // Ger invadrarna en anmation via en timer kallad animationtimer
+            float elapsed2 = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            AnimationTimer -= elapsed2;
+            if (AnimationTimer < 0.5 && AnimationTimer > 0)
+            {
+                InvaderAnimation = false;
+            }
+
+            else
+            {
+                InvaderAnimation = true;
+            }
+
+            // Återställer timern när den når noll
+            if (AnimationTimer < 0)
+            {
+                AnimationTimer = ResertAnimation;
+            }
 
 
             // Flyttar invadrarnas bullets i y led
@@ -329,6 +347,22 @@ namespace PRR1_19_Visning
                             IsHit = true;
                             score += 10;
                         }
+
+                // Om playerbullet träffar   
+                if (RectBullet.Intersects(EnRectBullet))
+                {
+                    RectBullet.X += 1000;
+                    EnRectBullet.X += 1000;
+
+                }
+
+            // Om playerbullet träffar ufobullet
+            if (RectBullet.Intersects(UfoRectBullet))
+            {
+                RectBullet.X += 1000;
+                UfoRectBullet.X += 1000;
+            }
+
 
 
             // Om en invader har kommit för nära playern
@@ -400,9 +434,17 @@ namespace PRR1_19_Visning
             }
 
             // Ritar ut invadrarna på både x och y axeln (r, c)
+            if (InvaderAnimation == false)
             for (int r = 0; r < rows; r++)
                 for (int c = 0; c < cols; c++)
                     spriteBatch.Draw(Invader, rectinvader[r, c], Color.White);
+
+            else
+                for (int r = 0; r < rows; r++)
+                    for (int c = 0; c < cols; c++)
+                    {
+                spriteBatch.Draw(Invader2, rectinvader[r, c], Color.White);
+            }
 
 
             // Ritar ut ufot
