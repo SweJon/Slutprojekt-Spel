@@ -83,3 +83,5 @@ C:\Users\Jon\source\repos\Slutprojekt-Spel\Space_Invaders\PRR1_19_Visning\PRR1_1
 C:\Users\Jon\source\repos\Slutprojekt-Spel\Space_Invaders\PRR1_19_Visning\PRR1_19_Visning\bin\Windows\x86\Debug\Content\Ufo.xnb
 C:\Users\Jon\source\repos\Slutprojekt-Spel\Space_Invaders\PRR1_19_Visning\PRR1_19_Visning\bin\Windows\x86\Debug\Content\scorefnt.xnb
 C:\Users\Jon\source\repos\Slutprojekt-Spel\Space_Invaders\PRR1_19_Visning\PRR1_19_Visning\bin\Windows\x86\Debug\Content\Player2.xnb
+C:\Users\Jon\source\repos\Slutprojekt-Spel\Space_Invaders\PRR1_19_Visning\PRR1_19_Visning\bin\Windows\x86\Debug\Content\Pill.xnb
+C:\Users\Jon\source\repos\Slutprojekt-Spel\Space_Invaders\PRR1_19_Visning\PRR1_19_Visning\bin\Windows\x86\Debug\Content\Player3.xnb
