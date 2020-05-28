@@ -11,12 +11,6 @@ namespace PRR1_19_Visning
 {
     class Power
     {
-
-        int Timeactive { get; set; }
-        int Timetoclaim { get; set; }
-        Vector2 Powerpos { get; set; }
-        double EffectStrenght { get; set; }
-
-        public static Random RanPwr = new Random(); // Exakt som randomi game skapar detta ett random nummer
+        public static Random RanPwr = new Random(); // Exakt som random i Game1 skapar detta ett random nummer
     }
 }

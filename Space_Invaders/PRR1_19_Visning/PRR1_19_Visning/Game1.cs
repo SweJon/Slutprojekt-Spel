@@ -10,7 +10,7 @@ namespace PRR1_19_Visning
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game//, PowerUp
+    public class Game1 : Game
     {
 
         // IUpdate och IDraw används inte ens
@@ -34,14 +34,17 @@ namespace PRR1_19_Visning
 
         Vector2 BackgroundPos = new Vector2(0, 0);
 
-        List<Vector2> EnemyBulletPos = new List<Vector2>();
+        int elapsed4;
+
 
         public static int score;
         SpriteFont ScoreFont;
         Vector2 ScorePosition;
 
-        Rectangle RectBullet, EnRectBullet, UfoRectBullet;
+        Rectangle RectBullet, EnRectBullet, UfoRectBullet, GoodPillRect, BadPillRect; // Här skapas rectanglarna som inte har några speciella förutbestämda värde
 
+        int GSpeedMultiplier = 1;
+        int BSpeedMultiplier = 1;
 
         float EnTimer = 3; // timer för fiendens bullet
         const float ResertTimer = 3; // Återställer tiden på timern
@@ -49,13 +52,38 @@ namespace PRR1_19_Visning
         double AnimationTimer = 1; // Timer för invadrarnas animation
         const double ResertAnimation = 1.5; // Återställer timern
 
+
+
+
+        // Tiden som pillren kan tas efter att de spawnat (eller försöker ta dig)
+        int GPillTimeToGet = SlowDown.Timetoclaim; // Står att min value inte får vara större än maxvalue men det stämmer inte att minvalue är störe än maxvalue
+        int BPillTimeToGet = SpeedUp.Timetoclaim;
+
+
+        // Timrar som bestämer när powerups spawnar under spelet, resert är utkommenterat då de ändå i nuläget bara är tänkt att spawna en gång då koden blir simplare
+        float GPillSpawnTimer = SlowDown.SpawnTime;
+        float BPillSpawnTimer = SpeedUp.SpawnTime;
+
+
+        // Timrar som bestämer hur länge powerupsen är aktiva
+        float BPillTimer = SpeedUp.Timeactive;
+        float GPillTimer = SlowDown.Timeactive; // kan ksk flytta dessa timrar till Slowdowns och speedup klasserna för o göra koden mer lättläsligt
+
+
+        // Dessa används för att identifiera om powerupsen är aktiva
+        bool GoodPillActive = false;
+        bool BadPillActive = false;
+
+
         enum GameState { 
              Menu,
              Game,
              Paused
         }
 
-        private enum Character // Enum för att välja olika karaktärer
+
+        // Enum för att välja olika karaktärer
+        private enum Character
         {
             Normal,
             Rambo,
@@ -65,6 +93,7 @@ namespace PRR1_19_Visning
         private Character character;
 
         bool InvaderAnimation = false;
+
 
         const int start = 0; // Enum för att välja scen
         const int spel = 1;
@@ -112,13 +141,17 @@ namespace PRR1_19_Visning
             ScorePosition.X = 10;
             ScorePosition.Y = 10;
 
+            BadPillRect.Y = 450;
+            GoodPillRect.Y = 450;
+
+            BadPillRect.X = -1000; // Jag spawnar de långt borta i början då de spawnar vid x = 0 om man inte anger något värde
+            GoodPillRect.X = -1000;
+
             character = Character.Normal; // Alltså är standard charactären i början Normal/Player
             InvaderAnimation = false;
 
-            SpeedUp redpill = new SpeedUp()
-            {
-
-            };
+            bool GoodPillActive = false;
+            bool BadPillActive = false;
 
             graphics.PreferredBackBufferHeight = 500;
             graphics.PreferredBackBufferWidth = 850;
@@ -141,6 +174,12 @@ namespace PRR1_19_Visning
             Bullet = Content.Load<Texture2D>("Bullet");
             Invader = Content.Load<Texture2D>("Invader");
             Invader2 = Content.Load<Texture2D>("Invader2");
+            GoodPillRect.Width = Pill.Width / 12;
+            GoodPillRect.Height = Pill.Height / 12;
+            BadPillRect.Width = Pill.Width / 12;
+            BadPillRect.Height = Pill.Height / 12;
+
+
 
 
             // Genererar ett slumpmässigt nummer inom ett intervall
@@ -240,9 +279,9 @@ namespace PRR1_19_Visning
                 for (int c = 0; c < cols; c++)
                 {
                     if (direction.Equals("Right"))
-                        rectinvader[r, c].X = rectinvader[r, c].X + 2;
+                        rectinvader[r, c].X += (2 * BSpeedMultiplier)/GSpeedMultiplier;
                     if (direction.Equals("Left"))
-                        rectinvader[r, c].X = rectinvader[r, c].X - 2;
+                        rectinvader[r, c].X -= (2 * BSpeedMultiplier)/GSpeedMultiplier;
                 }
 
 
@@ -321,11 +360,101 @@ namespace PRR1_19_Visning
                 InvaderAnimation = true;
             }
 
+
             // Återställer timern när den når noll
             if (AnimationTimer < 0)
             {
                 AnimationTimer = ResertAnimation;
             }
+
+
+            float elapsed3 = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            GPillSpawnTimer -= elapsed3; 
+            BPillSpawnTimer -= elapsed3;
+
+            if (GPillSpawnTimer < 0 && GPillSpawnTimer > SlowDown.Timetoclaim && GoodPillActive == false)
+            {
+                GoodPillRect.X = SpeedUp.Powerpos;
+            }
+
+            else
+            {
+                GoodPillRect.X = -1000;
+            }
+
+            if (BPillSpawnTimer < 0 && BPillSpawnTimer > SpeedUp.Timetoclaim && BadPillActive == false)
+            {
+                BadPillRect.X = SlowDown.Powerpos;
+                BadPillRect.Y = 450;
+            }
+
+            else
+            {
+                BadPillRect.Y = 1000;
+            }
+
+
+            for (int x = 0; x < PlayerXPos; x++)
+                for (int y = 0; y < PlayerYPos; y++)
+                            if (PlayerRec[x, y].Contains(BadPillRect))
+                    {
+                        BadPillRect.Y = 1000;
+                        BadPillActive = true;
+                    }
+
+
+            for (int x = 0; x < PlayerXPos; x++)
+                for (int y = 0; y < PlayerYPos; y++)
+                    if (PlayerRec[x, y].Contains(GoodPillRect))
+                    {
+                        GoodPillRect.X = 1000;
+                        GoodPillActive = true;
+                    }
+
+            if (GoodPillActive == true)
+            {
+                GSpeedMultiplier = SlowDown.EffectStrenght;
+                elapsed4 = (int)gameTime.ElapsedGameTime.Seconds;
+            }
+
+            else
+            {
+                GSpeedMultiplier = 1;
+            }
+
+            if (GPillTimer - elapsed4 < 0) // Värdet för elapsed4 känns inte igen av någon anledning
+            {
+                GoodPillActive = false;
+                GSpeedMultiplier = 1;
+            }
+
+
+            if (BadPillActive == true)
+            {
+                BSpeedMultiplier = SpeedUp.EffectStrenght;
+                BPillTimer -= (int)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+
+            if (BPillTimer < 0)
+            {
+                BadPillActive = false;
+                BSpeedMultiplier = 1;
+            }
+
+
+            // Flyttar BadPill mot spelaren
+            for (int x = 0; x < PlayerXPos; x++)
+                for (int y = 0; y < PlayerYPos; y++)
+                    if (BadPillRect.X < PlayerRec[x, y].X)
+                    {
+                       // BadPillRect.X += 1;
+                    }
+
+                    else
+                    {
+                        // BadPillRect.X -= 1;
+                    }
 
 
             // Flyttar invadrarnas bullets i y led
@@ -348,7 +477,7 @@ namespace PRR1_19_Visning
                             score += 10;
                         }
 
-                // Om playerbullet träffar   
+                // Om playerbullet träffar invaderbullet
                 if (RectBullet.Intersects(EnRectBullet))
                 {
                     RectBullet.X += 1000;
@@ -481,11 +610,11 @@ namespace PRR1_19_Visning
 
 
             // Ritar ut RedPill alltså Powerdownen(power) slowdown
-            //spriteBatch.Draw(Pill, new Vector2(20, 20), Color.Red);
+            spriteBatch.Draw(Pill, BadPillRect, Color.Red);
 
 
             // Ritar ut GreenPill alltså Powerupen Speedup
-            //spriteBatch.Draw(Pill, new Vector2(20, 20), Color.Green);
+            spriteBatch.Draw(Pill, GoodPillRect, Color.Green);
 
 
             spriteBatch.End();

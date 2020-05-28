@@ -9,13 +9,15 @@ namespace PRR1_19_Visning
 {
     class SpeedUp : Power // Gör fienderna snabbare och därmed förstör för spelaren
     {
-        public int Timeactive = RanPwr.Next(5, 10);
+        static public int Timeactive = RanPwr.Next(2, 4);   // Då alla värderna är static är de samma värde hela rundan. Dock Pillsen inte spawnar så ofta spelar detta inte så mycket roll. 
 
-        public int Timetoclaim = RanPwr.Next(2, 4);
+        static public int Timetoclaim = RanPwr.Next(-5, -2);
 
-        Vector2 Powerpos = new Vector2(0, RanPwr.Next(0, 500));
+        static public int Powerpos = RanPwr.Next(0, 500); // Static gör att den spawnar fast på samma position hela rundan. Frågan är om det spelar någon roll eller om de bara ska spawna en gång per runda.
 
-        double EffectStrenght = RanPwr.Next(1, 2); // Ta bort ett standardvärde från enemyspeeden men multiplicera eller dividera först värdet med detta nummer
+        static public float SpawnTime = RanPwr.Next(1, 6); // Bestämmer när powerdownen spawnar
+
+        static public int EffectStrenght = RanPwr.Next(4, 10); // Ta bort ett standardvärde från enemyspeeden men multiplicera eller dividera först värdet med detta nummer
     }
 }
 
