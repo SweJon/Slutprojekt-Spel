@@ -13,29 +13,13 @@ namespace PRR1_19_Visning
     public class Game1 : Game
     {
 
-        // IUpdate och IDraw används inte ens
-        private static List<IUpdate> Update1 = new List<IUpdate>(); 
-        private static List<IDraw> Draw1 = new List<IDraw>(); 
-
-        static public void ADD(IUpdate update)
-        {
-
-        }
-
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        private Texture2D startButton, exitButton, pauseButton, resumeButton; // Menu texture2ds
-        private Vector2 startButtonPosition, exitButtonPosition; // Menu vectorer
-
-
         Texture2D Player, Player2, Player3, Invader, Invader2, Bullet, Background, Ufo, Pill; // Spelar, invader, bullet och backgrunds texture2d'n
 
         Vector2 BackgroundPos = new Vector2(0, 0);
-
-        int elapsed4;
-
 
         public static int score;
         SpriteFont ScoreFont;
@@ -75,13 +59,6 @@ namespace PRR1_19_Visning
         bool BadPillActive = false;
 
 
-        enum GameState { 
-             Menu,
-             Game,
-             Paused
-        }
-
-
         // Enum för att välja olika karaktärer
         private enum Character
         {
@@ -93,11 +70,6 @@ namespace PRR1_19_Visning
         private Character character;
 
         bool InvaderAnimation = false;
-
-
-        const int start = 0; // Enum för att välja scen
-        const int spel = 1;
-        const int gameover = 2;
 
 
         Rectangle[,] PlayerRec;
@@ -141,17 +113,17 @@ namespace PRR1_19_Visning
             ScorePosition.X = 10;
             ScorePosition.Y = 10;
 
-            BadPillRect.Y = 450;
+            BadPillRect.Y = 1000; // BadPillRect spawnas på 1000 så det inte kommer åka in i spelaren innan det "spawnar"
             GoodPillRect.Y = 450;
 
-            BadPillRect.X = -1000; // Jag spawnar de långt borta i början då de spawnar vid x = 0 om man inte anger något värde
+            BadPillRect.X = -1000; // Jag spawnar båda långt borta i början då de spawnar vid x = 0 om man inte anger något värde
             GoodPillRect.X = -1000;
+
+            RectBullet.X = 1000; // Jag väljer att skriva såhär så de inte spawnar vid (0, 0) i början av spelet
+            UfoRectBullet.X = 1000;
 
             character = Character.Normal; // Alltså är standard charactären i början Normal/Player
             InvaderAnimation = false;
-
-            bool GoodPillActive = false;
-            bool BadPillActive = false;
 
             graphics.PreferredBackBufferHeight = 500;
             graphics.PreferredBackBufferWidth = 850;
@@ -181,9 +153,9 @@ namespace PRR1_19_Visning
 
 
 
-
             // Genererar ett slumpmässigt nummer inom ett intervall
             int Randomnumber = random.Next(-1500, -500);
+
 
 
             // Player
@@ -196,6 +168,7 @@ namespace PRR1_19_Visning
                     PlayerRec[x, y].Width = Player.Width;
                     PlayerRec[x, y].Height = Player.Height;
                 }
+
 
 
             // Ufo
@@ -222,9 +195,7 @@ namespace PRR1_19_Visning
                     rectinvader[r, c].Y = 60 * r;
                 }
 
-            Background = Content.Load<Texture2D>("Background"); // Backgrunden i spelet
-
-            // TODO: use this.Content to load your game content here
+            Background = Content.Load<Texture2D>("Background"); // Bakgrunden i spelet
         }
 
         protected override void UnloadContent()
@@ -245,18 +216,20 @@ namespace PRR1_19_Visning
             for (int x = 0; x < PlayerXPos; x++)
                 for (int y = 0; y < PlayerYPos; y++)
                 {
-                    if ((kNewState.IsKeyDown(Keys.Right)) && (PlayerRec[x, y].X < 700)) // Ändrar positionen för spelaren samt håller spelaren inom ramen
+                    // Ändrar positionen för spelaren samt håller spelaren inom ramen
+                    if ((kNewState.IsKeyDown(Keys.Right)) && (PlayerRec[x, y].X < 700)) 
                         PlayerRec[x, y].X += 6;
                     if ((kNewState.IsKeyDown(Keys.Left)) && (PlayerRec[x, y].X > 0))
                         PlayerRec[x, y].X -= 6;
 
-                    if (kNewState.IsKeyDown(Keys.NumPad1)) // Ennum för karaktärsbyte
-                        character = Character.Normal; // See till att kunna få skiten att fungera nu också
+                    // Ennum för karaktärsbyte
+                    if (kNewState.IsKeyDown(Keys.NumPad1)) 
+                        character = Character.Normal;
 
-                        if (kNewState.IsKeyDown(Keys.NumPad2)) // Enum för karaktärsbyte
+                        if (kNewState.IsKeyDown(Keys.NumPad2))
                             character = Character.Rambo;
 
-                            if (kNewState.IsKeyDown(Keys.NumPad3)) // Enum för karaktärsbyte
+                            if (kNewState.IsKeyDown(Keys.NumPad3))
                                 character = Character.Female;
                 }
 
@@ -315,6 +288,7 @@ namespace PRR1_19_Visning
                     for (int y = 0; y < PlayerYPos; y++)
                     {
                         IsHit = false;
+                        UfoIsHit = false;
                         RectBullet.X = PlayerRec[x, y].X + 45; // +45 är så att bulleten ska åka ur fingret och inte vänster om spelaren    
                         RectBullet.Y = PlayerRec[x, y].Y;
                     }
@@ -372,15 +346,17 @@ namespace PRR1_19_Visning
             GPillSpawnTimer -= elapsed3; 
             BPillSpawnTimer -= elapsed3;
 
+
+            // Om tiden det är kvar tills att spawna är mindre än 0 och större än tiden pillret ska synas i (dock med ett minus framför) "spawna pillret" annars ta bort pillret
             if (GPillSpawnTimer < 0 && GPillSpawnTimer > SlowDown.Timetoclaim && GoodPillActive == false)
             {
-                GoodPillRect.X = SpeedUp.Powerpos;
+                GoodPillRect.X = SpeedUp.Powerpos; 
             }
-
             else
             {
-                GoodPillRect.X = -1000;
+                GoodPillRect.X = 1000;
             }
+
 
             if (BPillSpawnTimer < 0 && BPillSpawnTimer > SpeedUp.Timetoclaim && BadPillActive == false)
             {
@@ -391,18 +367,21 @@ namespace PRR1_19_Visning
             else
             {
                 BadPillRect.Y = 1000;
+                BadPillRect.X = 1000;  
             }
 
 
+            // Om spelaren kolliderar med BadPill
             for (int x = 0; x < PlayerXPos; x++)
                 for (int y = 0; y < PlayerYPos; y++)
-                            if (PlayerRec[x, y].Contains(BadPillRect))
+                    if (PlayerRec[x, y].Contains(BadPillRect))
                     {
                         BadPillRect.Y = 1000;
                         BadPillActive = true;
                     }
 
 
+            // Om spelaren kolliderar med GoodPill
             for (int x = 0; x < PlayerXPos; x++)
                 for (int y = 0; y < PlayerYPos; y++)
                     if (PlayerRec[x, y].Contains(GoodPillRect))
@@ -411,10 +390,22 @@ namespace PRR1_19_Visning
                         GoodPillActive = true;
                     }
 
+
+            // Bestämer hur länge pillereffekten är aktiv
+            if (SlowDown.SpawnTime - SlowDown.Timetoclaim + SlowDown.Timetoclaim < elapsed3)
+            {
+                GoodPillActive = false;
+            }
+
+            if (SpeedUp.SpawnTime - SpeedUp.Timetoclaim + SpeedUp.Timetoclaim < elapsed3)
+            {
+                BadPillActive = false;
+            }
+
+
             if (GoodPillActive == true)
             {
                 GSpeedMultiplier = SlowDown.EffectStrenght;
-                elapsed4 = (int)gameTime.ElapsedGameTime.Seconds;
             }
 
             else
@@ -422,38 +413,33 @@ namespace PRR1_19_Visning
                 GSpeedMultiplier = 1;
             }
 
-            if (GPillTimer - elapsed4 < 0) // Värdet för elapsed4 känns inte igen av någon anledning
-            {
-                GoodPillActive = false;
-                GSpeedMultiplier = 1;
-            }
-
 
             if (BadPillActive == true)
             {
                 BSpeedMultiplier = SpeedUp.EffectStrenght;
-                BPillTimer -= (int)gameTime.ElapsedGameTime.TotalSeconds;
+                BadPillRect.Y = 450;
             }
 
-
-            if (BPillTimer < 0)
+            else 
             {
-                BadPillActive = false;
                 BSpeedMultiplier = 1;
+                BadPillRect.Y = 1000;
             }
 
 
             // Flyttar BadPill mot spelaren
             for (int x = 0; x < PlayerXPos; x++)
                 for (int y = 0; y < PlayerYPos; y++)
-                    if (BadPillRect.X < PlayerRec[x, y].X)
+                    if (BadPillRect.X < PlayerRec[x, y].X && BadPillActive == true)
                     {
-                       // BadPillRect.X += 1;
+                        BadPillRect.X += 1;
                     }
 
-                    else
+            for (int x = 0; x < PlayerXPos; x++)
+                for (int y = 0; y < PlayerYPos; y++)
+                    if (BadPillRect.X > PlayerRec[x, y].X && BadPillActive == true)
                     {
-                        // BadPillRect.X -= 1;
+                        BadPillRect.X -= 1; // Varför rör den sig så snabbt till spelaren då värdet bara ändras med -= 1 alt +=1?
                     }
 
 
@@ -469,7 +455,7 @@ namespace PRR1_19_Visning
             // Om invadern träffas av en bullet
                 for (int r = 0; r < rows; r++)
                     for (int c = 0; c < cols; c++)
-                        if (rectinvader[r, c].Contains(RectBullet)) 
+                        if (rectinvader[r, c].Intersects(RectBullet)) 
                         {
                             rectinvader[r, c].Y = -10000;
                             RectBullet.Y += 1000;
@@ -518,18 +504,13 @@ namespace PRR1_19_Visning
             // Om Ufot träffas av playerbullet
                 for (int s = 0; s < size; s++)
                     for (int y = 0; y < Ypos; y++)
-                        if (UfoRec[y, s].Contains(RectBullet))
+                        if (UfoRec[y, s].Intersects(RectBullet))
                         {
-                            UfoRec[y, s].Y = -10000;
-                            RectBullet.Y += 1000;
+                            UfoRec[s, y].Y = -10000;
+                            RectBullet.Y = 1000;
                             UfoIsHit = true;
                             score += 50;
                         }
-
-
-                // Tar bort objekt säkert
-                RemoveObjects();
-
 
 
             kOldState = kNewState;
@@ -577,9 +558,10 @@ namespace PRR1_19_Visning
 
 
             // Ritar ut ufot
-            for (int s = 0; s < size; s++)
+                for (int s = 0; s < size; s++)
                 for (int y = 0; y < Ypos; y++)
                     spriteBatch.Draw(Ufo, UfoRec[y, s], Color.White);
+                    
 
 
             // Ritar ut Playern
@@ -610,21 +592,18 @@ namespace PRR1_19_Visning
 
 
             // Ritar ut RedPill alltså Powerdownen(power) slowdown
+            if (GoodPillActive == false)
             spriteBatch.Draw(Pill, BadPillRect, Color.Red);
 
 
             // Ritar ut GreenPill alltså Powerupen Speedup
+            if (BadPillActive == false)
             spriteBatch.Draw(Pill, GoodPillRect, Color.Green);
 
 
             spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        void RemoveObjects()
-        {
-
         }
     }
 }

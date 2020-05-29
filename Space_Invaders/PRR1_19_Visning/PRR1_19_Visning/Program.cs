@@ -19,14 +19,14 @@ namespace PRR1_19_Visning
                 game.Run();
 
 
-            // Skriver in score i ett dokument (inlagd här då det inte funkade när det var i en seperat klass)
+            // Skriver in score i ett dokument
             StreamReader sr = new StreamReader(@"Score.txt");
             //int hiscore = int.Parse(sr.ReadLine()); // Funkar inte att skriva såhär av ngn anledning
             int hiscore = 0; // Tillfälligt värde för hiscore för att få resten av koden att fungera
             sr.Close();
 
             StreamWriter sw = new StreamWriter(@"Score.txt");        
-            sw.WriteLine("Score this round: " + Game1.score); // Lägg till tid variabeln efter :
+            sw.WriteLine("Score this round: " + Game1.score);
 
             if (Game1.score > hiscore)
             {

@@ -42,9 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
-    <Compile Include="IDraw.cs" />
     <Compile Include="Power.cs" />
-    <Compile Include="IUpdate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SlowDown.cs" />
